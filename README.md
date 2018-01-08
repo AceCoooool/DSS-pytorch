@@ -57,7 +57,7 @@ python demo.py --demo_img='your_picture' --trained_model='pre_trained pth' --cud
 
 Note: 
 
-1. default choose: download and copy the [pretrained model]() to `weights` directory. (add soon)
+1. default choose: download and copy the [pretrained model](https://drive.google.com/file/d/1dy9PcGGMjnyYO3EzNmdWdCh6YPjpkToq/view?usp=sharing) to `weights` directory
 2. a demo picture is in `png/demo.jpg`
 
 ### 5. Train

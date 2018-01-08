@@ -74,7 +74,7 @@ if __name__ == '__main__':
     # Testing settings
     parser.add_argument('--test_path', type=str, default=test_path)
     parser.add_argument('--test_label', type=str, default=test_label)
-    parser.add_argument('--model', type=str, default='./weights/best.pth')
+    parser.add_argument('--model', type=str, default='./weights/final.pth')
     parser.add_argument('--test_fold', type=str, default='./results/test')
 
     # Misc
