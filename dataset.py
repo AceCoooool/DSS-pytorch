@@ -31,7 +31,7 @@ def get_loader(img_root, label_root, img_size, batch_size, mode='train', num_thr
     shuffle = False
     mean = torch.Tensor([123.68, 116.779, 103.939]).view(3, 1, 1) / 255
     if mode == 'train':
-        transform = transforms.zenCompose([
+        transform = transforms.Compose([
             transforms.Resize((img_size, img_size)),
             transforms.ToTensor(),
             transforms.Lambda(lambda x: x - mean)
