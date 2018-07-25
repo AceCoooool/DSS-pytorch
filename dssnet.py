@@ -110,19 +110,22 @@ def build_model():
 
 # weight init
 def xavier(param):
-    init.xavier_uniform(param)
+    init.xavier_uniform_(param)
 
 
 def weights_init(m):
     if isinstance(m, nn.Conv2d):
         xavier(m.weight.data)
-        m.bias.data.zero_()
+    elif isinstance(m, nn.BatchNorm2d):
+        init.constant_(m.weight, 1)
+        init.constant_(m.bias, 0)
 
 
 if __name__ == '__main__':
-    from torch.autograd import Variable
-    net = DSS(*extra_layer(vgg(base['dss'], 3), extra['dss']), connect['dss']).cuda()
-    img = Variable(torch.randn((1, 3, 256, 256)), volatile=True).cuda()
+    net = build_model()
+    img = torch.randn(1, 3, 64, 64)
+    net = net.to(torch.device('cuda:0'))
+    img = img.to(torch.device('cuda:0'))
     out = net(img)
     k = [out[x] for x in [1, 2, 3, 6]]
     print(len(out))

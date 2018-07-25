@@ -135,14 +135,14 @@ class Solver(object):
                 y_pred = self.net(x)
                 loss = self.loss(y_pred, y)
                 loss.backward()
-                utils.clip_grad_norm(self.net.parameters(), self.config.clip_gradient)
+                utils.clip_grad_norm_(self.net.parameters(), self.config.clip_gradient)
                 # utils.clip_grad_norm(self.loss.parameters(), self.config.clip_gradient)
                 self.optimizer.step()
-                loss_epoch += loss.cpu().data[0]
+                loss_epoch += loss.item()
                 print('epoch: [%d/%d], iter: [%d/%d], loss: [%.4f]' % (
-                    epoch, self.config.epoch, i, iter_num, loss.cpu().data[0]))
+                    epoch, self.config.epoch, i, iter_num, loss.item()))
                 if self.config.visdom:
-                    error = OrderedDict([('loss:', loss.cpu().data[0])])
+                    error = OrderedDict([('loss:', loss.item())])
                     self.visual.plot_current_errors(epoch, i / iter_num, error)
             if (epoch + 1) % self.config.epoch_show == 0:
                 print('epoch: [%d/%d], epoch_loss: [%.4f]' % (epoch, self.config.epoch, loss_epoch / iter_num),

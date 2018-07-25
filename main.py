@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     # Hyper-parameters
     parser.add_argument('--n_color', type=int, default=3)
-    parser.add_argument('--img_size', type=int, default=256)
+    parser.add_argument('--img_size', type=int, default=256)   # 256
     parser.add_argument('--lr', type=float, default=1e-6)
     parser.add_argument('--clip_gradient', type=float, default=1.0)
     parser.add_argument('--cuda', type=bool, default=True)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_path', type=str, default=train_path)
     parser.add_argument('--label_path', type=str, default=label_path)
     parser.add_argument('--epoch', type=int, default=500)
-    parser.add_argument('--batch_size', type=int, default=8)
+    parser.add_argument('--batch_size', type=int, default=8)   # 8
     parser.add_argument('--val', type=bool, default=False)
     parser.add_argument('--val_path', type=str, default=val_path)
     parser.add_argument('--val_label', type=str, default=val_label)
