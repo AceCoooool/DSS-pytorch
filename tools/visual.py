@@ -1,7 +1,9 @@
+import torch
 import numpy as np
+import matplotlib.pyplot as plt
 
 
-class Viz_visdom():
+class Viz_visdom(object):
     def __init__(self, name, display_id=0):
         self.name = name
         self.display_id = display_id
@@ -42,3 +44,42 @@ class Viz_visdom():
                 self.vis.image(image_numpy, opts=dict(title=label),
                                win=self.display_id + idx)
             idx += 1
+
+
+# reference: https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+def plot_image(inp, fig_size, title=None, swap_channel=False, norm=False):
+    """Imshow for Tensor."""
+    if torch.is_tensor(inp):
+        inp = inp.numpy().transpose((1, 2, 0)) if swap_channel else inp.numpy()
+    else:
+        inp = inp.transpose((1, 2, 0)) if swap_channel else inp
+    if norm:
+        mean = np.array([0.485, 0.456, 0.406])
+        std = np.array([0.229, 0.224, 0.225])
+        inp = std * inp + mean
+    inp = np.clip(inp, 0, 1)
+    plt.figure(figsize=fig_size)
+    if inp.shape[0] == 1:
+        plt.imshow(inp[0], cmap='gray')
+    else:
+        plt.imshow(inp)
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.0001)  # pause a bit so that plots are updated
+
+
+def make_simple_grid(inp, padding=2, padding_value=1):
+    inp = torch.stack(inp, dim=0)
+    nmaps = inp.size(0)
+    height, width = inp.size(2), int(inp.size(3) + padding)
+    grid = inp.new(1, height, width * nmaps + padding).fill_(padding_value)
+    for i in range(nmaps):
+        grid.narrow(2, i * width + padding, width - padding).copy_(inp[i])
+    return grid
+
+
+if __name__ == '__main__':
+    inp = [torch.randn(1, 5, 5), torch.randn(1, 5, 5)]
+    out = make_simple_grid(inp)
+    print(out.size())
+    plot_image(out)

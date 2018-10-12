@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from torch.nn import init
-import torch.nn.functional as F
 
 # vgg choice
 base = {'dss': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M']}
@@ -12,7 +11,7 @@ connect = {'dss': [[2, 3, 4, 5], [2, 3, 4, 5], [4, 5], [4, 5], [], []]}
 
 
 # vgg16
-def vgg(cfg, i, batch_norm=False):
+def vgg(cfg, i=3, batch_norm=False):
     layers = []
     in_channels = i
     for v in cfg:
@@ -62,6 +61,23 @@ class FeatLayer(nn.Module):
         return self.main(x)
 
 
+# fusion features
+class FusionLayer(nn.Module):
+    def __init__(self, nums=6):
+        super(FusionLayer, self).__init__()
+        self.weights = nn.Parameter(torch.randn(nums))
+        self.nums = nums
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        init.constant_(self.weights, 1 / self.nums)
+
+    def forward(self, x):
+        for i in range(self.nums):
+            out = self.weights[i] * x[i] if i == 0 else out + self.weights[i] * x[i]
+        return out
+
+
 # extra part
 def extra_layer(vgg, cfg):
     feat_layers, concat_layers, scale = [], [], 1
@@ -75,15 +91,18 @@ def extra_layer(vgg, cfg):
 
 
 # DSS network
+# Note: if you use other backbone network, please change extract
 class DSS(nn.Module):
-    def __init__(self, base, feat_layers, concat_layers, connect):
+    def __init__(self, base, feat_layers, concat_layers, connect, extract=[3, 8, 15, 22, 29], v2=False):
         super(DSS, self).__init__()
-        self.extract = [3, 8, 15, 22, 29]
+        self.extract = extract
         self.connect = connect
         self.base = nn.ModuleList(base)
         self.feat = nn.ModuleList(feat_layers)
         self.comb = nn.ModuleList(concat_layers)
         self.pool = nn.AvgPool2d(3, 1, 1)
+        self.v2 = v2
+        if v2: self.fuse = FusionLayer()
 
     def forward(self, x, label=None):
         prob, back, y, num = list(), list(), list(), 0
@@ -97,9 +116,14 @@ class DSS(nn.Module):
         for i, k in enumerate(range(len(y))):
             back.append(self.comb[i](y[i], [y[j] for j in self.connect[i]]))
         # fusion map
-        back.append(torch.cat(back, dim=1).mean(dim=1, keepdim=True))
+        if self.v2:
+            # version2: learning fusion
+            back.append(self.fuse(back))
+        else:
+            # version1: mean fusion
+            back.append(torch.cat(back, dim=1).mean(dim=1, keepdim=True))
         # add sigmoid
-        for i in back: prob.append(F.sigmoid(i))
+        for i in back: prob.append(torch.sigmoid(i))
         return prob
 
 
@@ -128,4 +152,6 @@ if __name__ == '__main__':
     img = img.to(torch.device('cuda:0'))
     out = net(img)
     k = [out[x] for x in [1, 2, 3, 6]]
-    print(len(out))
+    print(len(k))
+    # for param in net.parameters():
+    #     print(param)
