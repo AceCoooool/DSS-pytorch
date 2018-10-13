@@ -93,7 +93,7 @@ def extra_layer(vgg, cfg):
 # DSS network
 # Note: if you use other backbone network, please change extract
 class DSS(nn.Module):
-    def __init__(self, base, feat_layers, concat_layers, connect, extract=[3, 8, 15, 22, 29], v2=False):
+    def __init__(self, base, feat_layers, concat_layers, connect, extract=[3, 8, 15, 22, 29], v2=True):
         super(DSS, self).__init__()
         self.extract = extract
         self.connect = connect

@@ -31,18 +31,21 @@ Different connection output：
 
 #### Some difference
 
-1. The original paper use：$Z=h(\sum_{i=2}^4 f_mR^{(m)})$，here we use $Z=h(\sum_{i=1}^6 f_mR^{(m)})$
+1. The original paper use：$Z=h(\sum_{i=2}^4 f_mR^{(m)})$，here we use $Z=h(\sum_{i=1}^6 f_mR^{(m)})$ in inference stage
 
 #### Results Reproduct
 
-|   Dataset (MSRA-B)   | Paper | Here (v1) | Here (v2) |
-| :------------------: | :---: | :-------: | :-------: |
-|  MAE (without CRF)   | 0.043 |   0.054   |           |
-| F_beta (without CRF) | 0.920 |   0.910   |           |
-|    MAE (with CRF)    | 0.028 |   0.047   |           |
-|  F_beta (with CRF)   | 0.927 |   0.916   |           |
+|   Dataset (MSRA-B)   | Paper | Here (v1) | Only Fusion (v1) | Here (v2) | Only Fusion (v2) |
+| :------------------: | :---: | :-------: | :--------------: | --------- | :--------------: |
+|  MAE (without CRF)   | 0.043 |   0.054   |      0.052       | 0.068     |      0.052       |
+| F_beta (without CRF) | 0.920 |   0.910   |      0.914       | 0.912     |      0.910       |
+|    MAE (with CRF)    | 0.028 |   0.047   |      0.048       | 0.047     |      0.049       |
+|  F_beta (with CRF)   | 0.927 |   0.916   |      0.917       | 0.915     |      0.918       |
 
-Note：v1 means use average fusion , v2 means use learnable fusion
+Note：
+
+1. v1 means use average fusion , v2 means use learnable fusion
+2. You can try to use other "inference stragedy"（I think other combine can get better results --- here use sout-2+sout-3+sout-4+fusion  --- you can just change [self.select](https://github.com/AceCoooool/DSS-pytorch/blob/66419dee7045f4581e7e18f910ca98e1a596705a/solver.py#L20)）
 
 ## Usage
 
@@ -88,7 +91,7 @@ pleease see `demo.ipynb`
 
 Note: 
 
-1. default choose: download and copy the [pretrained model]() to `weights` directory（v2 coming soon）
+1. default choose: download and copy the [pretrained model](https://pan.baidu.com/s/10XmHVMAOp1ewoJXhI0nRgA) to `weights` directory
 
 ### 5. Train
 
