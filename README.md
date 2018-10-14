@@ -35,17 +35,18 @@ Different connection output：
 
 #### Results Reproduct
 
-|   Dataset (MSRA-B)   | Paper | Here (v1) | Only Fusion (v1) | Here (v2) | Only Fusion (v2) |
-| :------------------: | :---: | :-------: | :--------------: | --------- | :--------------: |
-|  MAE (without CRF)   | 0.043 |   0.054   |      0.052       | 0.068     |      0.052       |
-| F_beta (without CRF) | 0.920 |   0.910   |      0.914       | 0.912     |      0.910       |
-|    MAE (with CRF)    | 0.028 |   0.047   |      0.048       | 0.047     |      0.049       |
-|  F_beta (with CRF)   | 0.927 |   0.916   |      0.917       | 0.915     |      0.918       |
+|   Dataset (MSRA-B)   | Paper | Here (v1) | Only Fusion (v1) | Here (v2) | Only Fusion (v2) | Here(v2 700) |
+| :------------------: | :---: | :-------: | :--------------: | :-------: | :--------------: | :----------: |
+|  MAE (without CRF)   | 0.043 |   0.054   |      0.052       |   0.068   |      0.052       |    0.051     |
+| F_beta (without CRF) | 0.920 |   0.910   |      0.914       |   0.912   |      0.910       |    0.918     |
+|    MAE (with CRF)    | 0.028 |   0.047   |      0.048       |   0.047   |      0.049       |    0.047     |
+|  F_beta (with CRF)   | 0.927 |   0.916   |      0.917       |   0.915   |      0.918       |    0.923     |
 
 Note：
 
 1. v1 means use average fusion , v2 means use learnable fusion
 2. You can try to use other "inference stragedy"（I think other combine can get better results --- here use sout-2+sout-3+sout-4+fusion  --- you can just change [self.select](https://github.com/AceCoooool/DSS-pytorch/blob/66419dee7045f4581e7e18f910ca98e1a596705a/solver.py#L20)）
+3. v2 700 means training with 700 epochs. （I use pre-trained model by 500 epochs：so the optimizer is a little differnt to direct 700 eopch）
 
 ## Usage
 
