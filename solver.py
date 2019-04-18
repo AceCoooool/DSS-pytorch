@@ -1,3 +1,4 @@
+import math
 import torch
 from collections import OrderedDict
 from torch.nn import utils, functional as F
@@ -15,7 +16,7 @@ class Solver(object):
         self.val_loader = val_loader
         self.test_dataset = test_dataset
         self.config = config
-        self.beta = 0.3  # for max F_beta metric
+        self.beta = math.sqrt(0.3)  # for max F_beta metric
         # inference: choose the side map (see paper)
         self.select = [1, 2, 3, 6]
         self.device = torch.device('cpu')
